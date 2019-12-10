@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<robot>
+
+
+
+
+<!-- -->
+ 
+
+
+<!-- stereo_camera -->
+   <gazebo reference="left_camera">
+    <material>Gazebo/Blue</material>
+    <sensor name="left_cam" type="depth">
+     <update_rate>1000</update_rate>
+     <camera>
+       <horizontal_fov>1.047198</horizontal_fov>
+       <image>
+         <width>640</width>
+         <height>480</height>
+         <format>R8G8B8</format>
+       </image>
+       <clip>
+         <near>0.05</near>
+         <far>3</far>
+       </clip>
+      </camera>
+      <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+      <baseline>0.2</baseline>
+      <alwaysOn>true</alwaysOn>
+          <!-- Keep this zero, update_rate in the parent <sensor> tag
+            will control the frame rate. -->
+      <updateRate>0.0</updateRate>
+      <cameraName>camera_ir</cameraName>
+      <imageTopicName>/camera/color/image_raw</imageTopicName>
+      <cameraInfoTopicName>/camera/color/camera_info</cameraInfoTopicName>
+      <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+      <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
+      <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+      <frameName>left_camera</frameName>
+      <pointCloudCutoff>0.5</pointCloudCutoff>
+      <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+      <distortionK1>0</distortionK1>
+      <distortionK2>0</distortionK2>
+      <distortionK3>0</distortionK3>
+      <distortionT1>0</distortionT1>
+      <distortionT2>0</distortionT2>
+      <CxPrime>0</CxPrime>
+      <Cx>0</Cx>
+      <Cy>0</Cy>
+      <focalLength>0</focalLength>
+      <hackBaseline>0</hackBaseline>
+     </plugin>	
+    </sensor>
+   </gazebo> 		
+
+
+  <!-- IMU_SENSOR -->
+    <gazebo  >
+   <!--  <gravity>true</gravity> -->
+     <sensor name='imu_sensor' type='imu'>
+       <always_on>1</always_on>
+       <update_rate>20</update_rate>
+       <visualize>1</visualize>
+       <topic>__default_topic__</topic>
+       <plugin name="imu_controller" filename='libgazebo_ros_imu_sensor.so'>
+          <topicName>imu/data</topicName>
+          <bodyName>imu_sensor</bodyName>
+          <frameName>imu_sensor</frameName>	
+          <updateRateHZ>10.0</updateRateHZ>
+          <gaussianNoise>0.0</gaussianNoise>
+          <xyzOffset>0 0 0</xyzOffset>
+          <rpyOffset>0 0 0</rpyOffset>
+       </plugin>
+       <pose>0 0 0 0 0 0</pose>
+     </sensor>
+    </gazebo> 
+
+ <gazebo reference="imu_sensor">
+	<material>Gazebo/Red</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+      <!-- GPS Sensor -->
+  <gazebo >
+   <!-- <material>Gazebo/Green</material>-->
+     <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_footprint</bodyName>
+      <topicName>gps_data</topicName>
+      <magnitude>1</magnitude>
+      <frameId>map</frameId> 	
+      <velocityTopicName>gps_velocity</velocityTopicName>
+      <referenceLatitude>-30.06022459407145675</referenceLatitude>
+      <referenceLongitude>-30.173913575780311191</referenceLongitude>
+      <referenceHeading>0</referenceHeading>
+      <referenceAltitude>10</referenceAltitude>
+      <declination>0.0</declination>
+      <inclination>60.0</inclination>
+      <offest>0 0 0</offest> 		
+      <drift>5.0 5.0 5.0</drift>
+      <drifFrequency>0 0 0</drifFrequency>	
+      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <velocityDrift>0 0 0</velocityDrift>
+      <velocityDriftFrequency>0 0 0</velocityDriftFrequency> 
+      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+     </plugin>
+   
+  </gazebo> 
+
+ <gazebo reference="GPS_sensor">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+ 
+
+ <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>10</updateRate>
+      <leftJoint>left_wheel_hinge</leftJoint>
+      <rightJoint>right_wheel_hinge</rightJoint>
+      <wheelSeparation>0.4</wheelSeparation>
+      <wheelDiameter>0.2</wheelDiameter>
+      <torque>10</torque>
+      <commandTopic>/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishOdomTF>false</publishOdomTF>
+      <publishTf>true</publishTf>
+      <publishWheelTF>false</publishWheelTF>	
+      <publishWheelJointState>false</publishWheelJointState>
+      <wheelAcceleration>0</wheelAcceleration>
+      <wheelTorque>5</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+      <odometrySource>world</odometrySource>	
+    </plugin>
+  </gazebo> 
+
+</robot>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+  <gazebo reference="camera">
+    <material>Gazebo/Green</material>
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>udacity_bot/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+-->
+
+<!--
+	<gazebo reference="left_camera">
+    <material>Gazebo/Blue</material>
+    <sensor type="multicamera" name="stereo_camera">
+      <update_rate>30.0</update_rate>
+      <camera name="left">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <camera name="right">
+        <pose>0 -0.07 0 0 0 0</pose>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>multisense_sl/camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>left_camera_optical_frame</frameName>
+        <!-<rightFrameName>right_camera_optical_frame</rightFrameName>- >
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+-->
+
